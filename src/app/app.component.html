@@ -1,9 +1,11 @@
-<app-header></app-header>
+<app-header
+    (isRecipes)="isRecipes($event)"
+></app-header>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <app-recipes></app-recipes>
-            <app-shopping-list></app-shopping-list>
+            <app-recipes *ngIf="isRecipesActive"></app-recipes>
+            <app-shopping-list *ngIf="!isRecipesActive"></app-shopping-list>
         </div>
     </div>
 </div>
