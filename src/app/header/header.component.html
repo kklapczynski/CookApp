@@ -9,8 +9,9 @@
 
         <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
             <ul class="nav navbar-nav">
-                <li><a href="#" (click)="activateRecipes()">Recipes</a></li>
-                <li><a href="#" (click)="activateShoppingList()">Shopping List</a></li>
+                <!-- use enums below in click method -->
+                <li><a href="#" (click)="onSelect(Feature.Recipes)">Recipes</a></li>
+                <li><a href="#" (click)="onSelect(Feature.ShoppingList)">Shopping List</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
