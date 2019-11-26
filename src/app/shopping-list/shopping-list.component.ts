@@ -5,8 +5,7 @@ import { ShoppingService } from './shopping.service';
 @Component({
   selector: 'app-shopping-list',
   templateUrl: './shopping-list.component.html',
-  styleUrls: ['./shopping-list.component.scss'],
-  providers: [ShoppingService]
+  styleUrls: ['./shopping-list.component.scss']
 })
 
 export class ShoppingListComponent implements OnInit {
@@ -20,6 +19,6 @@ export class ShoppingListComponent implements OnInit {
       (ingredients: Ingredient[]) => {
         this.ingredients = ingredients;
       }
-    )
+    );
   }
 }

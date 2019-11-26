@@ -1,7 +1,9 @@
 import { Recipe } from './recipe.model';
-import { EventEmitter } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
+import { ShoppingService } from '../shopping-list/shopping.service';
 
+@Injectable()
 export class RecipesService {
     clickedRecipe = new EventEmitter<Recipe>();
 
@@ -27,8 +29,14 @@ export class RecipesService {
             ])
     ];
 
+    constructor(private shoppingService: ShoppingService) {}
+
     getRecipes() {
         return this.recipes.slice();    // to have a copy of a recipe array instead of a reference
         // read: https://codeburst.io/explaining-value-vs-reference-in-javascript-647a975e12a0
+    }
+
+    addIngredientsToShoppingList(ingredients: Ingredient[]) {
+        this.shoppingService.addIngredients(ingredients);
     }
 }
