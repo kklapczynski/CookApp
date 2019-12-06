@@ -4,14 +4,13 @@
             <button type="button" class="navbar-toggle" (click)="collapsed = !collapsed">
                     <span class="icon-bar" *ngFor="let iconBar of [1,2,3]"></span>
             </button>
-            <a href="#" class="navbar-brand">Cook App</a>
+            <a routerLink="/" class="navbar-brand">Cook App</a>
         </div>
 
         <div class="navbar-collapse" [class.collapse]="collapsed" (window:resize)="collapsed = true">
             <ul class="nav navbar-nav">
-                <!-- use enums below in click method -->
-                <li><a href="#" (click)="onSelect(Feature.Recipes)">Recipes</a></li>
-                <li><a href="#" (click)="onSelect(Feature.ShoppingList)">Shopping List</a></li>
+                <li routerLinkActive="active"><a routerLink="/recipes">Recipes</a></li>
+                <li routerLinkActive="active"><a routerLink="/shopping">Shopping List</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown" appOpen>

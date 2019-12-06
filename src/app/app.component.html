@@ -4,8 +4,9 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <app-recipes *ngIf="selectedFeature === Feature.Recipes"></app-recipes>
-            <app-shopping-list *ngIf="selectedFeature === Feature.ShoppingList"></app-shopping-list>
+            <!-- <app-recipes *ngIf="selectedFeature === Feature.Recipes"></app-recipes>
+            <app-shopping-list *ngIf="selectedFeature === Feature.ShoppingList"></app-shopping-list> -->
+            <router-outlet></router-outlet>
         </div>
     </div>
 </div>
