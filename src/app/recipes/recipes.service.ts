@@ -31,6 +31,14 @@ export class RecipesService {
 
     constructor(private shoppingService: ShoppingService) {}
 
+    getRecipeByName(name: string) {
+        return this.recipes.find(
+            (el, index, array) => {
+                return el.name === name;
+            } 
+        )
+    }
+
     getRecipes() {
         return this.recipes.slice();    // to have a copy of a recipe array instead of a reference
         // read: https://codeburst.io/explaining-value-vs-reference-in-javascript-647a975e12a0
