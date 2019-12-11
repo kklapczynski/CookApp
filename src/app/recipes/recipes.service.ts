@@ -1,11 +1,10 @@
 import { Recipe } from './recipe.model';
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingService } from '../shopping-list/shopping.service';
 
 @Injectable()
 export class RecipesService {
-    clickedRecipe = new EventEmitter<Recipe>();
 
     private recipes: Recipe[] = [
         new Recipe(
@@ -33,7 +32,7 @@ export class RecipesService {
 
     getRecipeByName(name: string) {
         return this.recipes.find(
-            (el, index, array) => {
+            (el) => {
                 return el.name === name;
             } 
         )

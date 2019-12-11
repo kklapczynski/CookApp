@@ -14,6 +14,7 @@ import { OpenDirective } from './shared/open.directive';
 import { ShoppingService } from './shopping-list/shopping.service';
 import { AppRoutingModule } from './app-routing.module';
 import { SelectRecipeComponent } from './recipes/select-recipe/select-recipe.component';
+import { RecipesService } from './recipes/recipes.service';
 
 
 @NgModule({
@@ -34,7 +35,7 @@ import { SelectRecipeComponent } from './recipes/select-recipe/select-recipe.com
     FormsModule,
     AppRoutingModule
   ],
-  providers: [ShoppingService],
+  providers: [ShoppingService, RecipesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
