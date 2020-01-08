@@ -15,6 +15,7 @@ import { ShoppingService } from './shopping-list/shopping.service';
 import { AppRoutingModule } from './app-routing.module';
 import { SelectRecipeComponent } from './recipes/select-recipe/select-recipe.component';
 import { RecipesService } from './recipes/recipes.service';
+import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { RecipesService } from './recipes/recipes.service';
     RecipesDetailsComponent,
     RecipesItemComponent,
     OpenDirective,
-    SelectRecipeComponent
+    SelectRecipeComponent,
+    RecipeEditComponent
   ],
   imports: [
     BrowserModule,

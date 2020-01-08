@@ -5,10 +5,16 @@
 </div>
 <div class="row">
     <div class="col-xs-12">
-        <app-recipes-item 
+        <!-- verison with recipe name instead of its index
+            <app-recipes-item 
             *ngFor="let recipe of recipes"
             [recipe]="recipe"
             [routerLink]="['/recipes', recipe.name]">
+        </app-recipes-item> -->
+        <app-recipes-item 
+            *ngFor="let recipe of recipes; let i = index"
+            [recipe]="recipe"
+            [routerLink]="['/recipes', i]">
         </app-recipes-item>
     </div>
 </div>

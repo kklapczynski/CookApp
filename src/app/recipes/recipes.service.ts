@@ -38,6 +38,10 @@ export class RecipesService {
         )
     }
 
+    getRecipeById(id: string) {
+        return this.recipes[parseInt(id)];
+    }
+
     getRecipes() {
         return this.recipes.slice();    // to have a copy of a recipe array instead of a reference
         // read: https://codeburst.io/explaining-value-vs-reference-in-javascript-647a975e12a0
