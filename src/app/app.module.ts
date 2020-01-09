@@ -14,6 +14,7 @@ import { OpenDirective } from './shared/open.directive';
 import { ShoppingService } from './shopping-list/shopping.service';
 import { AppRoutingModule } from './app-routing.module';
 import { RecipesStartComponent } from './recipes/recipes-start/recipes-start.component';
+import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { RecipesStartComponent } from './recipes/recipes-start/recipes-start.com
     RecipesDetailsComponent,
     RecipesItemComponent,
     OpenDirective,
-    RecipesStartComponent
+    RecipesStartComponent,
+    RecipeEditComponent
   ],
   imports: [
     BrowserModule,
