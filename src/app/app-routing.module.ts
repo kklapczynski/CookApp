@@ -11,7 +11,7 @@ const appRoutes: Routes = [
     { path: '', redirectTo: '/recipes', pathMatch: 'full' },
     { path: 'recipes', component: RecipesComponent, children: [
         { path: '', component: SelectRecipeComponent},
-        { path: 'new', component: RecipeEditComponent}, // this path has to be before path with parameter, otherwise 'new' is treated as a dynamic parameter
+        { path: 'new', component: RecipeEditComponent}, // this path has to be before path with parameter, otherwise 'new' is treated as a dynamic cparameter
         { path: ':id', component: RecipesDetailsComponent},
         { path: ':id/edit', component: RecipeEditComponent}
 
