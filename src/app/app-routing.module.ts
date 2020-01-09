@@ -12,10 +12,11 @@ const appRoutes: Routes = [
     { path: 'recipes', component: RecipesComponent, children: [
         { path: '', component: SelectRecipeComponent},
         { path: 'new', component: RecipeEditComponent}, // this path has to be before path with parameter, otherwise 'new' is treated as a dynamic cparameter
-        { path: ':id', component: RecipesDetailsComponent},
+        { path: ':name', component: RecipesDetailsComponent},  // detail component with usage of name property of recipe rather then id
+        // { path: ':id', component: RecipesDetailsComponent},  // this is used in course solution branch
         { path: ':id/edit', component: RecipeEditComponent}
 
-        // {path: ':name', component: RecipesDetailsComponent}  detail component with usage of name property of recipe rather then id
+        
         // {path: '**', component: SelectRecipeComponent}   path with stars would be needed when this default component was not passed as a first path
     ] },
     { path: 'shopping', component: ShoppingListComponent },
