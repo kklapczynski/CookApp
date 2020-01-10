@@ -1,5 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { Feature } from '../shared/enums';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -7,19 +6,10 @@ import { Feature } from '../shared/enums';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  // allows to use Feature enum in template
-  Feature = Feature;
 
   collapsed = true;
-  
-  @Output() selectedFeature = new EventEmitter<Feature>();
 
   constructor() { }
 
-  ngOnInit() {
-  }
-  
-  onSelect(feature: Feature) {
-    return this.selectedFeature.emit(feature);
-  }
+  ngOnInit() { }
 }

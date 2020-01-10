@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Feature } from './shared/enums';
 
 @Component({
   selector: 'app-root',
@@ -8,17 +7,7 @@ import { Feature } from './shared/enums';
 })
 
 export class AppComponent implements OnInit {
-  // allows to use Feature enum in template
-  Feature = Feature;
-
   title = 'CookApp';
-  selectedFeature: Feature;
 
-  ngOnInit() {
-    if(!this.selectedFeature) this.selectedFeature = Feature.Recipes;
-  }
-
-  displayFeature(feature: string) {
-    this.selectedFeature = Feature[feature];
-  }
+  ngOnInit() { }
 }
