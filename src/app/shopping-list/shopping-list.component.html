@@ -6,7 +6,9 @@
             <a 
                 class="list-group-item"
                 style="cursor: pointer"
-                *ngFor="let ing of ingredients">
+                *ngFor="let ing of ingredients; let i = index"
+                (click)="editSchoppingListItem(i)"    
+            >
             {{ ing.name }} ({{ ing.amount }})
             </a>
         </ul>
