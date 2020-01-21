@@ -38,5 +38,13 @@ export class ShoppingService {
         this.emitIngredientsChanged();
     }
 
-    
+    updateIngredient(index: number, updatedIngredient: Ingredient) {
+        this.ingredients[index] = updatedIngredient;
+        this.emitIngredientsChanged();
+    }
+
+    deleteIngredient(index: number) {
+        this.ingredients.splice(index, 1);
+        this.emitIngredientsChanged();
+    }
 }

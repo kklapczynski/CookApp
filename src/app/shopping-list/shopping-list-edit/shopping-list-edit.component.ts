@@ -14,10 +14,11 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
   // @ViewChild('nameInput', {static: false}) nameInputRef: ElementRef;
   // @ViewChild('amountInput', {static: false}) amountInputRef: ElementRef;
 
-  @ViewChild('f', {'static': false}) formRef: NgForm;
+  @ViewChild('f', {'static': false}) form: NgForm;
   shoppingListItemIndexSubscription: Subscription;
   editMode = false;
   editedItem: Ingredient;
+  editedItemIndex: number;
 
   constructor(private shoppingService: ShoppingService) { }
 
@@ -25,8 +26,9 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
     this.shoppingListItemIndexSubscription = this.shoppingService.shoppingListItemIndex.subscribe(
       (index: number) => {
         this.editMode = true;
+        this.editedItemIndex = index;
         this.editedItem = this.shoppingService.getIngredient(index);
-        this.formRef.setValue( {
+        this.form.setValue( {
           'name': this.editedItem.name,
           'amount': this.editedItem.amount
         });
@@ -38,27 +40,25 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
     this.shoppingListItemIndexSubscription.unsubscribe();
   }
 
-
-  // addNewIngredient() {
-  //   this.shoppingService.addIngredient(this.createNewIngredient());
-  // }
-
-  // createNewIngredient() {
-  //   return new Ingredient(this.getNameInput(), this.getAmountInput());
-  // }
-
-  // getNameInput(): string {
-  //   return this.nameInputRef.nativeElement.value;
-  // }
-
-  // getAmountInput(): number {
-  //   return this.amountInputRef.nativeElement.value;
-  // }
-
-  onAdditem(f: NgForm) {
+  onSubmit(f: NgForm) {
     const formValues = f.value;
     const newIngredient = new Ingredient(formValues.name, formValues.amount);
-    this.shoppingService.addIngredient(newIngredient);
+    if(this.editMode) {
+      this.shoppingService.updateIngredient(this.editedItemIndex, newIngredient);
+    } else {
+      this.shoppingService.addIngredient(newIngredient);
+    }
+    this.editMode = false;
+    f.reset();
   }
-  
+
+  onClear() {
+    this.form.reset();
+    this.editMode = false;
+  }
+
+  onDelete() {
+    this.shoppingService.deleteIngredient(this.editedItemIndex);
+    this.onClear();
+  }
 }
