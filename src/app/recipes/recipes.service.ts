@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 export class RecipesService {
 
     recipesChanged = new Subject<Recipe[]>();
+    newRecipeId = new Subject<number>();
 
     private recipes: Recipe[] = [
         new Recipe(
@@ -37,6 +38,11 @@ export class RecipesService {
         return this.recipes[id];
     }
 
+    // emit changed list of recipes - subscription to it in recipes-list
+    emitRecipesChange() {
+        this.recipesChanged.next(this.recipes.slice());
+    }
+
     getRecipes() {
         return this.recipes.slice();    // to have a copy of a recipe array instead of a reference
         // read: https://codeburst.io/explaining-value-vs-reference-in-javascript-647a975e12a0
@@ -48,13 +54,17 @@ export class RecipesService {
 
     addRecipe(newRecipe: Recipe) {
         this.recipes.push(newRecipe);
-        // emit changed list of recipes - subscription to it in recipes-list
-        this.recipesChanged.next(this.recipes.slice());
+        this.newRecipeId.next(this.recipes.length-1);
+        this.emitRecipesChange();
     }
 
     updateRecipe(index: number, editedRecipe: Recipe) {
         this.recipes[index] = editedRecipe;
-        // emit changed list of recipes - subscription to it in recipes-list
-        this.recipesChanged.next(this.recipes.slice());
+        this.emitRecipesChange();
+    }
+
+    deleteRecipe(index: number) {
+        this.recipes.splice(index,1);
+        this.emitRecipesChange();
     }
 }

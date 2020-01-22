@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { RecipesService } from '../recipes.service';
 import { Recipe } from '../recipe.model';
@@ -13,8 +13,9 @@ export class RecipeEditComponent implements OnInit {
   id: number;
   editMode = false;
   recipeForm: FormGroup;
+  newRecipeId: number;
 
-  constructor(private route: ActivatedRoute, private recipeService: RecipesService) { }
+  constructor(private route: ActivatedRoute, private recipeService: RecipesService, private router: Router) { }
 
   ngOnInit() {
     this.route.params.subscribe(
@@ -23,6 +24,10 @@ export class RecipeEditComponent implements OnInit {
         this.editMode = params['id'] != null;
         this.initForm();
       }
+    );
+
+    this.recipeService.newRecipeId.subscribe(
+      (newId: number) => this.newRecipeId = newId
     )
   }
   
@@ -58,8 +63,6 @@ export class RecipeEditComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.recipeForm);
-    console.log(this.recipeForm.value);
     // const editedRecipe = new Recipe(
     //   this.recipeForm.value.name,
     //   this.recipeForm.value.description,
@@ -68,12 +71,22 @@ export class RecipeEditComponent implements OnInit {
     // )
     if(this.editMode) {
       // this.recipeService.updateRecipe(this.id, editedRecipe)
-      this.recipeService.updateRecipe(this.id, this.recipeForm.value)
+      this.recipeService.updateRecipe(this.id, this.recipeForm.value);
+      this.router.navigate(['../'], {relativeTo: this.route});  // edited recipe id already in the route
     } else {
       // this.recipeService.addRecipe(editedRecipe);
       this.recipeService.addRecipe(this.recipeForm.value);
+      // when new recipe is added (no id in route yet) navigate to its details view: id has to be added to the route
+      this.router.navigate(['../', this.newRecipeId], {relativeTo: this.route});  
     }
   }
+
+  // DONE: cancel button: clear form and navigate away
+  onCancel() {
+    this.recipeForm.reset();
+    this.router.navigate(['../'], {relativeTo: this.route});
+  }
+  // TODO: delete recipe - from dropdown list in recipe details
 
   get controls() {
     return (<FormArray>this.recipeForm.get('ingredients')).controls;

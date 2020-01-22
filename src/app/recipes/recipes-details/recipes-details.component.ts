@@ -32,4 +32,9 @@ export class RecipesDetailsComponent implements OnInit {
     // this.router.navigate(['edit'], {relativeTo: this.route});  // simpler solution in master branch using routerLink in html
     this.router.navigate(['../', this.id, 'edit'], {relativeTo: this.route}); // this is just for demo purpose of building more complicated routes
   }
+
+  onDeleteRecipe() {
+    this.recipesService.deleteRecipe(this.id);
+    this.router.navigate(['../'], {relativeTo: this.route});
+  }
 }
