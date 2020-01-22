@@ -14,6 +14,11 @@ export class RecipesListComponent implements OnInit {
   constructor(private recipesService: RecipesService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.recipesService.recipesChanged.subscribe(
+      (recipes: Recipe[]) => {
+        this.recipes = recipes;
+      }
+    )
     this.recipes = this.recipesService.getRecipes();
   }
 
