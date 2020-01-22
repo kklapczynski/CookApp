@@ -19,8 +19,10 @@
                         <label for="imagePath">Image URL</label>
                         <input type="text" class="form-control"
                             formControlName="imagePath"
+                            #imagePath
                         >
                     </div>
+                    <img *ngIf="imagePath.value" [src]="imagePath.value" alt="dish preview" class="img-responsive">
                     <div class="form-group">
                         <label for="name">Description</label>
                         <textarea name="description" class="form-control" id="" cols="12" rows="6"
