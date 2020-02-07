@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RecipesService } from '../recipes/recipes.service';
 import { Recipe } from '../recipes/recipe.model';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -21,7 +21,7 @@ export class DataStorageService {
     }
 
     fetchRecipes() {
-        this.http.get<Recipe[]>(
+        return this.http.get<Recipe[]>(
             'https://ng-cookbook-4b5b5.firebaseio.com/recipes.json'
         )
         .pipe(
@@ -32,10 +32,11 @@ export class DataStorageService {
                         ingredients: recipe.ingredients ? recipe.ingredients : []   // if there is 'ingredients' property from spreading: ...recipe it is replaced with new one, but here we give it the same values as they were
                     }
                 })
-            }))
-        .subscribe( recipes => {
-            console.log(recipes);
-            this.recipesService.setRecipes(recipes);
-        })
+            }),
+            tap( recipes => {                               // tap allows to set recipes and subscribe somewhere else - in header component
+                // console.log(recipes);
+                this.recipesService.setRecipes(recipes)
+            })
+        )
     }
 }
