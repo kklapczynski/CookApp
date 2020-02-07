@@ -92,7 +92,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     this.recipeForm.reset();
     this.router.navigate(['../'], {relativeTo: this.route});
   }
-  // TODO: delete recipe - from dropdown list in recipe details
 
   get controls() {
     return (<FormArray>this.recipeForm.get('ingredients')).controls;
