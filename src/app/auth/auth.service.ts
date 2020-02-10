@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
-import { throwError, Subject } from 'rxjs';
+import { throwError, BehaviorSubject } from 'rxjs';
 import { User } from './user.model';
 
 // new interface to be used only here in this service: to set up shape of data coming back from signing up
@@ -20,8 +20,9 @@ export interface AuthResponseData {
     providedIn: 'root'
 })
 export class AuthService{
-
-    user = new Subject<User>();
+    // BehaviorSubject works like Subject + subscriber can get immidiate access to previous value, even when subscribed later
+    // so we can get access to currently active user even when we weren't subscribed when user was emitted
+    user = new BehaviorSubject<User>(null); // argument is a starting value - here User, but null i saccepted when no start needed 
 
     constructor(private http: HttpClient) {}
 
