@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthComponent } from './auth.component';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 // new interface to be used only here in this service: to set up shape of data coming back from signing up
 // it is not required, but good practice in Angular
@@ -29,6 +31,23 @@ export class AuthService{
                 password: password,
                 returnSecureToken: true
             }
+        ).pipe( 
+            catchError( errorRes => {
+                let errorMessage = 'An unknown error occured !';
+                if(!errorRes.error || !errorRes.error.error) {
+                    return throwError(errorMessage);
+                }
+                // console.log(errorRes.error.error.message);
+                switch (errorRes.error.error.message) {
+                    case 'EMAIL_EXISTS':
+                        errorMessage = 'This email exists already.';
+                        break;
+                    case 'INVALID_EMAIL':
+                        errorMessage = 'This email address invalid.';
+                        break;
+                }
+                return throwError(errorMessage);
+            })
         )
     }
 }
