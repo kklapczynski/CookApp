@@ -24,6 +24,7 @@ export class AuthService{
     // BehaviorSubject works like Subject + subscriber can get immidiate access to previous value, even when subscribed later
     // so we can get access to currently active user even when we weren't subscribed when user was emitted
     user = new BehaviorSubject<User>(null); // argument is a starting value - here User, but null i saccepted when no start needed 
+    private tokenExpirationTimer: any;  // to be able to cancel setTimout when login out manually
 
     constructor(private http: HttpClient, private router: Router) {}
 
@@ -73,6 +74,7 @@ export class AuthService{
             expirationDate
         );
         this.user.next(user);
+        this.autoLogout(expiresIn * 1000);
         localStorage.setItem('userData', JSON.stringify(user)); // converts JS object into a string
     }
 
@@ -121,6 +123,9 @@ export class AuthService{
         
         // if user token is valid emit it
         if(loadedUser.token) {
+            // autologout after token expires - need to calculate, cause token was issued earlier and it's closer to expire datetime
+            const expireInMiliseconds = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
+            this.autoLogout(expireInMiliseconds);
             this.user.next(loadedUser);
         }
     }
@@ -128,5 +133,16 @@ export class AuthService{
     logout() {
         this.user.next(null);
         this.router.navigate(['/auth']);
+        localStorage.removeItem('userData');
+        if(this.tokenExpirationTimer) {
+            clearTimeout(this.tokenExpirationTimer);
+        }
+        this.tokenExpirationTimer = null;
+    }
+
+    autoLogout(expirationDuration: number) {
+        this.tokenExpirationTimer = setTimeout( () => {
+            this.logout();
+        }, expirationDuration);
     }
 }
