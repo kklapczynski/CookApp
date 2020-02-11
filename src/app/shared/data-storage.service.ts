@@ -26,18 +26,10 @@ export class DataStorageService {
         // use exhaustMap to fisrt subscribe and get user data to use it in http get method
         // exhaustMap takes data from previous observable and returns observable that replaces the first one in entire observable chain
 
-        return this.authService.user.pipe(
-            take(1), 
-            exhaustMap(user => {
-                return this.http.get<Recipe[]>(
-                    // 'https://ng-cookbook-4b5b5.firebaseio.com/recipes.json?auth=' + user.token
-                    // or other version , both from firbase docs
-                    'https://ng-cookbook-4b5b5.firebaseio.com/recipes.json',
-                    {
-                        params: new HttpParams().set('auth', user.token)
-                    }
-                )
-            }),
+        // token param attach is moved to AuthInterceptorService
+        return this.http.get<Recipe[]>(
+            'https://ng-cookbook-4b5b5.firebaseio.com/recipes.json'
+        ).pipe(
             map(recipes => {                            // rxjs operator that transforms data stream
                 return recipes.map( recipe => {         // needs to return recipes array of Recipe objects, for which js .map calls for each recipe object
                     return {                            // method returning the same object, but adding ingredients with existing values or with empty array - in case on database there is an object without 'ingredients property
