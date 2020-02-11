@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { throwError, BehaviorSubject } from 'rxjs';
 import { User } from './user.model';
+import { Router } from '@angular/router';
 
 // new interface to be used only here in this service: to set up shape of data coming back from signing up
 // it is not required, but good practice in Angular
@@ -24,7 +25,7 @@ export class AuthService{
     // so we can get access to currently active user even when we weren't subscribed when user was emitted
     user = new BehaviorSubject<User>(null); // argument is a starting value - here User, but null i saccepted when no start needed 
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private router: Router) {}
 
     signup(email: string, password: string) {
         // firebase setup: https://firebase.google.com/docs/reference/rest/auth#section-create-email-password
@@ -72,6 +73,7 @@ export class AuthService{
             expirationDate
         );
         this.user.next(user);
+        localStorage.setItem('userData', JSON.stringify(user)); // converts JS object into a string
     }
 
     // private method cause we use it only in this service
@@ -96,5 +98,35 @@ export class AuthService{
                 break;
         }
         return throwError(errorMessage);
+    }
+
+    autoLogin() {
+        const userData: {
+            email: string;
+            id: string;
+            _token: string;
+            _tokenExpirationDate: string;
+        } = JSON.parse(localStorage.getItem('userData'));  // convert string back to JS object, but NOT to our User model (no getter token() e.g.)
+        
+        if(!userData) {
+            return;
+        }
+        // create new User to be able to use getter: token() - it checks if token is still valid
+        const loadedUser = new User(
+            userData.email,
+            userData.id,
+            userData._token,
+            new Date(userData._tokenExpirationDate)
+        );
+        
+        // if user token is valid emit it
+        if(loadedUser.token) {
+            this.user.next(loadedUser);
+        }
+    }
+
+    logout() {
+        this.user.next(null);
+        this.router.navigate(['/auth']);
     }
 }
