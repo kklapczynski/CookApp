@@ -14,9 +14,11 @@ import { map, take } from 'rxjs/operators';
 export class AuthGuard implements CanActivate {
     constructor(private authService: AuthService, private router: Router) {}
     canActivate(route: ActivatedRouteSnapshot, router: RouterStateSnapshot): 
-        boolean | UrlTree
+        | boolean 
+        | UrlTree
         | Promise<boolean | UrlTree>
-        | Observable<boolean | UrlTree> {
+        | Observable<boolean | UrlTree> 
+    {
         // return true when it is allowed to pass the guard
         // in this case when user is authenticated - logged in
         return this.authService.user.pipe(
