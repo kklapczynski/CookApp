@@ -7,15 +7,20 @@ import { RecipesDetailsComponent } from './recipes/recipes-details/recipes-detai
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
 import { RecipesResolverService } from './recipes/recipes-resolver.service';
 import { AuthComponent } from './auth/auth.component';
+import { AuthGuard } from './auth/auth.guard';
 
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/recipes', pathMatch: 'full' },
-    { path: 'recipes', component: RecipesComponent, children: [
-        { path: '', component: RecipesStartComponent }, // deafult when no recipe is chosen yet
-        { path: 'new', component: RecipeEditComponent },    // hardcoded paths have to be before ones with parameter, so that 'new' isn't considered a dynamic parameter
-        { path: ':id', component: RecipesDetailsComponent, resolve: [RecipesResolverService] }, // dynamic param id is set by [routerLink] on <a> tag of recipe-item
-        { path: ':id/edit', component: RecipeEditComponent, resolve: [RecipesResolverService] }
+    { 
+        path: 'recipes',
+        component: RecipesComponent,
+        canActivate: [AuthGuard],
+        children: [
+            { path: '', component: RecipesStartComponent }, // deafult when no recipe is chosen yet
+            { path: 'new', component: RecipeEditComponent },    // hardcoded paths have to be before ones with parameter, so that 'new' isn't considered a dynamic parameter
+            { path: ':id', component: RecipesDetailsComponent, resolve: [RecipesResolverService] }, // dynamic param id is set by [routerLink] on <a> tag of recipe-item
+            { path: ':id/edit', component: RecipeEditComponent, resolve: [RecipesResolverService] }
     ] },
     { path: 'shopping', component: ShoppingListComponent },
     { path: 'auth', component: AuthComponent}
