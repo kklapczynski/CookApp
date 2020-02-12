@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { StoreModule } from '@ngrx/store';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -21,6 +22,7 @@ import { RecipesService } from './recipes/recipes.service';
 import { AuthComponent } from './auth/auth.component';
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
+import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer';
 
 
 
@@ -45,7 +47,8 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StoreModule.forRoot({shoppingList: shoppingListReducer})  // defines app's store - one for the whole app, with parts defined in reducers and listed here
   ],
   providers: [
     ShoppingService, 
