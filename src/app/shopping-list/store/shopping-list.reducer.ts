@@ -24,6 +24,8 @@ const initialState: State = {
     ],
     editedIngredient: null,     // initial value: null, cause we are not editing any by default, only after click
     editedIngredientIndex: -1   // initial value: -1, cause this is not valid index number, will be replaced after click
+    // after adding above properties - data about edited ingredient - we get through START_EDIT action - it saves this info in the Store in shoopingList State
+    // in other actions we can use this data directly from Store - see changes in DELETE... and UPDATE...; no need to pass it in dispatching of those actions
 };
 
 
@@ -46,23 +48,27 @@ export function shoppingListReducer(state: State = initialState, action: Shoppin
             
             return {
                 ...state,
-                ingredients: state.ingredients.filter((ingredient, ingredientindex) => { return ingredientindex !== action.payload})    // filter returns new array, so rule of not modifying old state is kept
+                ingredients: state.ingredients.filter((ingredient, ingredientIndex) => { return ingredientIndex !== state.editedIngredientIndex}),    // filter returns new array, so rule of not modifying old state is kept
+                editedIngredient: null,
+                editedIngredientIndex: -1
             }
         case ShoppingListActions.UPDATE_INGREDIENT:
             // get ingredient to update in current state
-            const ingredient = state.ingredients[action.payload.index];
+            const ingredient = state.ingredients[state.editedIngredientIndex];
             // set ingredient to change - copy and modify
             const updatedIngredient = {
                 ...ingredient,  // copy of all old properties of an ingredient - in case we don't overwrite all properties (culd be skipped here cause we are overwriting all props)
-                ...action.payload.ingredient    // replace old properties of ingredient with new ones from action's payload
+                ...action.payload    // replace old properties of ingredient with new ones from action's payload
             };
             // copy array of ingredients where edited one has to be replaced
             const updatedIngredients = [...state.ingredients];
-            updatedIngredients[action.payload.index] = updatedIngredient;   // replace edited ingredient with its new values
+            updatedIngredients[state.editedIngredientIndex] = updatedIngredient;   // replace edited ingredient with its new values
 
             return {
                 ...state,
-                ingredients: updatedIngredients
+                ingredients: updatedIngredients,
+                editedIngredient: null,             // when EDIT action is done we need to change state to initial by setting default values; hte same after DELETE
+                editedIngredientIndex: -1
             }
         case ShoppingListActions.START_EDIT:
             return {

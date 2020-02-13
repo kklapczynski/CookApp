@@ -44,7 +44,7 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
       if(stateData.editedIngredientIndex > -1) {
         this.editMode = true;
         this.editedItem = stateData.editedIngredient;
-        this.editedItemIndex = stateData.editedIngredientIndex;
+        // this.editedItemIndex = stateData.editedIngredientIndex;
         this.form.setValue( {
           'name': this.editedItem.name,
           'amount': this.editedItem.amount
@@ -67,7 +67,7 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
     const newIngredient = new Ingredient(formValues.name, formValues.amount);
     if(this.editMode) {
       // this.shoppingService.updateIngredient(this.editedItemIndex, newIngredient);
-      this.store.dispatch(new ShoppingListActions.UpdateIngredient({index: this.editedItemIndex, ingredient: newIngredient}))
+      this.store.dispatch(new ShoppingListActions.UpdateIngredient(newIngredient))
     } else {
       // this.shoppingService.addIngredient(newIngredient); // after setup of getting data in shopping-list component from store, changing data in shoppingService won't have effect
       // here we dispatch action
@@ -85,7 +85,7 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
 
   onDelete() {
     // this.shoppingService.deleteIngredient(this.editedItemIndex);
-    this.store.dispatch(new ShoppingListActions.DeleteIngredient(this.editedItemIndex))
+    this.store.dispatch(new ShoppingListActions.DeleteIngredient())
     this.onClear();
   }
 }
