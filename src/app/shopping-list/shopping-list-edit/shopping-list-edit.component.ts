@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { Ingredient } from 'src/app/shared/ingredient.model';
 import { ShoppingService } from '../shopping.service';
 import * as ShoppingListActions from '../store/shopping-list.actions';
+import { take, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-shopping-list-edit',
@@ -47,7 +48,8 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
     const formValues = f.value;
     const newIngredient = new Ingredient(formValues.name, formValues.amount);
     if(this.editMode) {
-      this.shoppingService.updateIngredient(this.editedItemIndex, newIngredient);
+      // this.shoppingService.updateIngredient(this.editedItemIndex, newIngredient);
+      this.store.dispatch(new ShoppingListActions.UpdateIngredient({index: this.editedItemIndex, ingredient: newIngredient}))
     } else {
       // this.shoppingService.addIngredient(newIngredient); // after setup of getting data in shopping-list component from store, changing data in shoppingService won't have effect
       // here we dispatch action
@@ -63,7 +65,8 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
   }
 
   onDelete() {
-    this.shoppingService.deleteIngredient(this.editedItemIndex);
+    // this.shoppingService.deleteIngredient(this.editedItemIndex);
+    this.store.dispatch(new ShoppingListActions.DeleteIngredient(this.editedItemIndex))
     this.onClear();
   }
 }

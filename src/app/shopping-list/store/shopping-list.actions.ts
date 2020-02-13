@@ -4,6 +4,11 @@ import { Ingredient } from 'src/app/shared/ingredient.model';
 // good practice to secure against typos
 export const ADD_INGREDIENT = 'ADD_INGREDIENT';
 export const ADD_INGREDIENTS = 'ADD_INGREDIENTS';
+export const UPDATE_INGREDIENT = 'UPDATE_INGREDIENT';
+export const DELETE_INGREDIENT = 'DELETE_INGREDIENT';
+
+// use Typescript 'type' feature to enable multiple types - creates a union of all different action stypes we want to use
+export type ShoppingListActions = AddIngredient | AddIngredients | DeleteIngredient | UpdateIngredient;
 
 // to describe action
 export class AddIngredient implements Action {
@@ -21,5 +26,13 @@ export class AddIngredients implements Action {
     constructor(public payload: Ingredient[]) {}
 }
 
-// use Typescript 'type' feature to enable multiple types - creates a union of all different action stypes we want to use
-export type ShoppingListActions = AddIngredient | AddIngredients;
+export class DeleteIngredient implements Action {
+    readonly type = DELETE_INGREDIENT;
+
+    constructor(public payload: number) {}
+}
+export class UpdateIngredient implements Action {
+    readonly type = UPDATE_INGREDIENT;
+
+    constructor(public payload: {index: number, ingredient: Ingredient}) {}
+}

@@ -23,6 +23,28 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
                 ...state,
                 ingredients: [...state.ingredients, ...action.payload]
             }
+        case ShoppingListActions.DELETE_INGREDIENT:
+            
+            return {
+                ...state,
+                ingredients: state.ingredients.filter((ingredient, ingredientindex) => { return ingredientindex !== action.payload})    // filter returns new array, so rule of not modifying old state is kept
+            }
+        case ShoppingListActions.UPDATE_INGREDIENT:
+            // get ingredient to update in current state
+            const ingredient = state.ingredients[action.payload.index];
+            // set ingredient to change - copy and modify
+            const updatedIngredient = {
+                ...ingredient,  // copy of all old properties of an ingredient - in case we don't overwrite all properties (culd be skipped here cause we are overwriting all props)
+                ...action.payload.ingredient    // replace old properties of ingredient with new ones from action's payload
+            };
+            // copy array of ingredients where edited one has to be replaced
+            const updatedIngredients = [...state.ingredients];
+            updatedIngredients[action.payload.index] = updatedIngredient;   // replace edited ingredient with its new values
+
+            return {
+                ...state,
+                ingredients: updatedIngredients
+            }
         default:            // this is for first time ngrx loads this reducer
             return state;   // we provide default=initial state of this part of store
     }
