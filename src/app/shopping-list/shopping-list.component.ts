@@ -3,6 +3,8 @@ import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingService } from './shopping.service';
 import { Subscription, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
+import * as fromShoppinglist from './store/shopping-list.reducer';  // 'fromShoppingList' - convention form ngRx naming import of store part
+import * as ShoppingListActions from './store/shopping-list.actions';
 
 @Component({
   selector: 'app-shopping-list',
@@ -16,7 +18,7 @@ export class ShoppingListComponent implements OnInit ,OnDestroy {
 
   constructor(
     private shoppingService: ShoppingService,
-    private store: Store<{ shoppingList: { ingredients: Ingredient[] } }> // in Store<Type> we choose which part of store we are interested in
+    private store: Store<fromShoppinglist.AppState> // in Store<Type> we choose which part of store we are interested in: fromShoppingList.AppState holds app state as seen from this particular reducer file
   ) { }
 
   ngOnInit() {
@@ -35,8 +37,11 @@ export class ShoppingListComponent implements OnInit ,OnDestroy {
     // );
   }
 
-  editSchoppingListItem(i:number) {
-    this.shoppingService.shoppingListItemIndex.next(i);
+  editShoppingListItem(i:number) {
+    // this.shoppingService.shoppingListItemIndex.next(i);
+    // TODO: replace this emit to service with store dispatch action, so info about editing is in store - it then can be easier used accors whole app
+    // TODO: need to change state of store in shopping-list.reducer.ts to do the above
+    this.store.dispatch(new ShoppingListActions.StartEdit(i));
   }
 
   ngOnDestroy(): void {
