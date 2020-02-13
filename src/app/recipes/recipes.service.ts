@@ -4,7 +4,6 @@ import { Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { Ingredient } from '../shared/ingredient.model';
-import { ShoppingService } from '../shopping-list/shopping.service';
 import * as shoppingListActions from '../shopping-list/store/shopping-list.actions';
 import * as fromShoppingList from '../shopping-list/store/shopping-list.reducer';
 
@@ -37,7 +36,7 @@ export class RecipesService {
     // ];
 
     private recipes: Recipe[] = [];
-    constructor(private shoppingService: ShoppingService, private store: Store<fromShoppingList.AppState>) {}
+    constructor(private store: Store<fromShoppingList.AppState>) {}
 
     getRecipeById(id: number) {
         return this.recipes[id];
@@ -59,7 +58,6 @@ export class RecipesService {
     }
 
     addIngredientsToShoppingList(ingredients: Ingredient[]) {
-        // this.shoppingService.addIngredients(ingredients);
         this.store.dispatch(new shoppingListActions.AddIngredients(ingredients));
     }
 

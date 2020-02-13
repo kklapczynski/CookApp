@@ -14,7 +14,6 @@ import { RecipesListComponent } from './recipes/recipes-list/recipes-list.compon
 import { RecipesDetailsComponent } from './recipes/recipes-details/recipes-details.component';
 import { RecipesItemComponent } from './recipes/recipes-list/recipes-item/recipes-item.component';
 import { OpenDirective } from './shared/open.directive';
-import { ShoppingService } from './shopping-list/shopping.service';
 import { AppRoutingModule } from './app-routing.module';
 import { RecipesStartComponent } from './recipes/recipes-start/recipes-start.component';
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
@@ -51,8 +50,7 @@ import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer
     StoreModule.forRoot({shoppingList: shoppingListReducer})  // defines app's store - one for the whole app, with parts defined in reducers and listed here
   ],
   providers: [
-    ShoppingService, 
-    RecipesService, 
+    RecipesService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
