@@ -1,8 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DataStorageService } from '../shared/data-storage.service';
-import { subscribeOn } from 'rxjs/operators';
-import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+
+import { DataStorageService } from '../shared/data-storage.service';
+import { AuthService } from '../auth/auth.service';
+import * as fromAppStore from '../store/app.reducer';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -15,11 +18,26 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
   userSubscription: Subscription;
 
-  constructor(private dataStoregeService: DataStorageService, private authService: AuthService) { }
+  constructor(
+    private dataStoregeService: DataStorageService,
+    private authService: AuthService,
+    private store: Store<fromAppStore.AppState>
+  ) { }
 
   ngOnInit() { 
-    this.userSubscription = this.authService.user.subscribe( user => {
-      this.isAuthenticated = !!user;
+    // this.userSubscription = this.store.select('auth')
+    // 1.version
+    // .subscribe( authState => {
+    //   this.isAuthenticated = !!authState.user;
+    // });
+    // 2.version
+    // .pipe(map(authState => {return authState.user}))
+    // .subscribe( user => {
+    //   this.isAuthenticated = !!user;
+    // });
+    // 3.version
+    this.userSubscription = this.store.select('auth','user').subscribe( user => {
+        this.isAuthenticated = !!user;
     });
   }
 
@@ -34,6 +52,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onLogout() {
     this.authService.logout();
   }
+
   ngOnDestroy() {
     this.userSubscription.unsubscribe();
   }

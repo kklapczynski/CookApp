@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
-import { throwError, BehaviorSubject } from 'rxjs';
-import { User } from './user.model';
+import { throwError, BehaviorSubject, from } from 'rxjs';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import * as fromAppStore from '../store/app.reducer';
+import * as fromAuthActions from './store/auth.action';
 
+import { User } from './user.model';
 // new interface to be used only here in this service: to set up shape of data coming back from signing up
 // it is not required, but good practice in Angular
 // properties are from firebase auth docs
@@ -23,10 +26,10 @@ export interface AuthResponseData {
 export class AuthService {
     // BehaviorSubject works like Subject + subscriber can get immidiate access to previous value, even when subscribed later
     // so we can get access to currently active user even when we weren't subscribed when user was emitted
-    user = new BehaviorSubject<User>(null); // argument is a starting value - here User, but null is accepted when no start needed 
+    // user = new BehaviorSubject<User>(null); // argument is a starting value - here User, but null is accepted when no start needed 
     private tokenExpirationTimer: any;  // to be able to cancel setTimout when login out manually
 
-    constructor(private http: HttpClient, private router: Router) {}
+    constructor(private http: HttpClient, private router: Router, private store: Store<fromAppStore.AppState>) {}
 
     signup(email: string, password: string) {
         // firebase setup: https://firebase.google.com/docs/reference/rest/auth#section-create-email-password
@@ -38,7 +41,7 @@ export class AuthService {
                 password: password,
                 returnSecureToken: true
             }
-        ).pipe( 
+        ).pipe(
             catchError(this.handleError),
             tap( resData => {
                 this.handleAuthentication(resData.email, resData.localId, resData.idToken, +resData.expiresIn);
@@ -73,7 +76,15 @@ export class AuthService {
             token, 
             expirationDate
         );
-        this.user.next(user);
+        // this.user.next(user);   // TODO: change emitting user creation to action on ngRx
+        this.store.dispatch(
+            new fromAuthActions.Login({
+                email: email,
+                userId: userId,
+                token: token,
+                expirationDate: expirationDate
+            })
+        )
         this.autoLogout(expiresIn * 1000);
         localStorage.setItem('userData', JSON.stringify(user)); // converts JS object into a string
     }
@@ -126,12 +137,21 @@ export class AuthService {
             // autologout after token expires - need to calculate, cause token was issued earlier and it's closer to expire datetime
             const expireInMiliseconds = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
             this.autoLogout(expireInMiliseconds);
-            this.user.next(loadedUser);
+            // this.user.next(loadedUser);
+            this.store.dispatch(
+                new fromAuthActions.Login({
+                    email: loadedUser.email,
+                    userId: loadedUser.id,
+                    token: loadedUser.token,
+                    expirationDate: new Date(userData._tokenExpirationDate)
+                })
+            );
         }
     }
 
     logout() {
-        this.user.next(null);
+        // this.user.next(null);   // TODO: change emitting user deletion to action on ngRx
+        this.store.dispatch(new fromAuthActions.Logout());
         this.router.navigate(['/auth']);
         localStorage.removeItem('userData');
         if(this.tokenExpirationTimer) {

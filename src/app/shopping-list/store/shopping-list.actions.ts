@@ -2,12 +2,12 @@ import { Action } from '@ngrx/store';
 import { Ingredient } from 'src/app/shared/ingredient.model';
 
 // good practice to secure against typos
-export const ADD_INGREDIENT = 'ADD_INGREDIENT';
-export const ADD_INGREDIENTS = 'ADD_INGREDIENTS';
-export const UPDATE_INGREDIENT = 'UPDATE_INGREDIENT';
-export const DELETE_INGREDIENT = 'DELETE_INGREDIENT';
-export const START_EDIT = 'START_EDIT';
-export const STOP_EDIT = 'STOP_EDIT';
+export const ADD_INGREDIENT = '[Shopping List] Add Ingredient'; // action types naming convention of ngRx
+export const ADD_INGREDIENTS = '[Shopping List] Ad Ingredients';
+export const UPDATE_INGREDIENT = '[Shopping List] Update Ingredient';
+export const DELETE_INGREDIENT = '[Shopping List] Delete Ingredient';
+export const START_EDIT = '[Shopping List] Start Edit';
+export const STOP_EDIT = '[Shopping List] Stop Edit';
 
 // use Typescript 'type' feature to enable multiple types - creates a union of all different action stypes we want to use
 export type ShoppingListActions = AddIngredient | AddIngredients | DeleteIngredient | UpdateIngredient | StartEdit | StopEdit;

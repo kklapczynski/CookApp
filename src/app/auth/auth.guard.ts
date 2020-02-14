@@ -1,9 +1,11 @@
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
 import { AuthService } from './auth.service';
-import { map, take } from 'rxjs/operators';
+import * as fromAppStore from '../store/app.reducer';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +14,11 @@ import { map, take } from 'rxjs/operators';
 // guard to use in front of routes we want to protect - in app-routing.module.ts
 
 export class AuthGuard implements CanActivate {
-    constructor(private authService: AuthService, private router: Router) {}
+    constructor(
+        private authService: AuthService,
+        private router: Router,
+        private store: Store<fromAppStore.AppState>
+        ) {}
     canActivate(route: ActivatedRouteSnapshot, router: RouterStateSnapshot): 
         | boolean 
         | UrlTree
@@ -21,8 +27,11 @@ export class AuthGuard implements CanActivate {
     {
         // return true when it is allowed to pass the guard
         // in this case when user is authenticated - logged in
-        return this.authService.user.pipe(
+        return this.store.select('auth', 'user').pipe(
             take(1),
+            // map(authState => {           // shorter version is to add 'user' to this.store.select()
+            //     return authState.user;
+            // }),
             map(user => {
             // return true when there is a user returned from authService
             const isAuth = !!user;  // trick to convert existing object to true or to false when no object
