@@ -22,6 +22,7 @@ import { AuthComponent } from './auth/auth.component';
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
 import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer';
+import { authReducer } from './auth/store/auth.reducer';
 
 
 
@@ -47,7 +48,10 @@ import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer
     HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    StoreModule.forRoot({shoppingList: shoppingListReducer})  // defines app's store - one for the whole app, with parts defined in reducers and listed here
+    StoreModule.forRoot({
+      shoppingList: shoppingListReducer,
+      auth: authReducer
+    })  // defines app's store - one for the whole app, with parts defined in reducers and listed here
   ],
   providers: [
     RecipesService,

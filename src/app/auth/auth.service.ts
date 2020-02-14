@@ -20,10 +20,10 @@ export interface AuthResponseData {
 @Injectable({
     providedIn: 'root'
 })
-export class AuthService{
+export class AuthService {
     // BehaviorSubject works like Subject + subscriber can get immidiate access to previous value, even when subscribed later
     // so we can get access to currently active user even when we weren't subscribed when user was emitted
-    user = new BehaviorSubject<User>(null); // argument is a starting value - here User, but null i saccepted when no start needed 
+    user = new BehaviorSubject<User>(null); // argument is a starting value - here User, but null is accepted when no start needed 
     private tokenExpirationTimer: any;  // to be able to cancel setTimout when login out manually
 
     constructor(private http: HttpClient, private router: Router) {}

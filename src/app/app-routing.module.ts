@@ -21,9 +21,10 @@ const appRoutes: Routes = [
             { path: 'new', component: RecipeEditComponent },    // hardcoded paths have to be before ones with parameter, so that 'new' isn't considered a dynamic parameter
             { path: ':id', component: RecipesDetailsComponent, resolve: [RecipesResolverService] }, // dynamic param id is set by [routerLink] on <a> tag of recipe-item
             { path: ':id/edit', component: RecipeEditComponent, resolve: [RecipesResolverService] }
-    ] },
+        ] 
+    },
     { path: 'shopping', component: ShoppingListComponent },
-    { path: 'auth', component: AuthComponent}
+    { path: 'auth', component: AuthComponent }
 ]
 
 @NgModule({
