@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
 import {  Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import * as fromShoppinglist from './store/shopping-list.reducer';  // 'fromShoppingList' - convention form ngRx naming import of store part
+import * as fromAppStore from '../store/app.reducer';
 import * as ShoppingListActions from './store/shopping-list.actions';
 
 @Component({
@@ -15,7 +15,7 @@ export class ShoppingListComponent implements OnInit ,OnDestroy {
   ingredients: Observable<{ ingredients: Ingredient[] }>; // ngrx store.select('name of part of store we need here') returns Observable, that we are saving in 'ingredients' property
 
   constructor(
-    private store: Store<fromShoppinglist.AppState> // in Store<Type> we choose which part of store we are interested in: fromShoppingList.AppState holds app state as seen from this particular reducer file
+    private store: Store<fromAppStore.AppState> // in Store<Type> we choose which part of store we are interested in: fromShoppingList.AppState holds app state as seen from this particular reducer file
   ) { }
 
   ngOnInit() {

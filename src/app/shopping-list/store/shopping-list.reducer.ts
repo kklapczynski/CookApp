@@ -11,11 +11,6 @@ export interface State {
     editedIngredientIndex: number;
 }
 
-// define interface of whole app state, that holds all parts
-export interface AppState {
-    shoppingList: State
-}
-
 // initial state as in shopping.service.ts as JS object
 const initialState: State = {
     ingredients: [

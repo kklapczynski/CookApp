@@ -23,6 +23,7 @@ import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinne
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
 import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer';
 import { authReducer } from './auth/store/auth.reducer';
+import * as fromAppStore from './store/app.reducer';
 
 
 
@@ -48,10 +49,7 @@ import { authReducer } from './auth/store/auth.reducer';
     HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    StoreModule.forRoot({
-      shoppingList: shoppingListReducer,
-      auth: authReducer
-    })  // defines app's store - one for the whole app, with parts defined in reducers and listed here
+    StoreModule.forRoot(fromAppStore.appReducer)  // defines app's store - one for the whole app, object with list replaced by separately defined whole app reducers collection
   ],
   providers: [
     RecipesService,

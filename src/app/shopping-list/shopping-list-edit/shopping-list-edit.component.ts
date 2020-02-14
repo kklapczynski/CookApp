@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 
 import { Ingredient } from 'src/app/shared/ingredient.model';
 import * as ShoppingListActions from '../store/shopping-list.actions';
-import * as fromShoppinglist from '../store/shopping-list.reducer';
+import * as fromAppStore from '../../store/app.reducer';
 
 @Component({
   selector: 'app-shopping-list-edit',
@@ -21,7 +21,7 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
   editedItem: Ingredient;
   editedItemIndex: number;
 
-  constructor(private store: Store<fromShoppinglist.AppState>) { }
+  constructor(private store: Store<fromAppStore.AppState>) { }
 
   ngOnInit() {
     // TODO: replace subscription to service with one to store
