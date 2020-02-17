@@ -24,6 +24,8 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
 import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer';
 import { authReducer } from './auth/store/auth.reducer';
 import * as fromAppStore from './store/app.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from './auth/store/auth.effects';
 
 
 
@@ -49,7 +51,8 @@ import * as fromAppStore from './store/app.reducer';
     HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    StoreModule.forRoot(fromAppStore.appReducer)  // defines app's store - one for the whole app, object with list replaced by separately defined whole app reducers collection
+    StoreModule.forRoot(fromAppStore.appReducer),  // defines app's store - one for the whole app, object with list replaced by separately defined whole app reducers collection
+    EffectsModule.forRoot([AuthEffects])
   ],
   providers: [
     RecipesService,

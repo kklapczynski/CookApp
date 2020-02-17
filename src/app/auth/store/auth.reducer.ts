@@ -4,10 +4,14 @@ import * as AuthActions from './auth.action';
 // define shape of state of 'auth' part of app's state for injecting the store
 export interface State {
     user: User;
+    authError: string;
+    loading: boolean;
 }
 
 const initialState = {
-    user: null              // this is a property from auth.service.ts, that is used across the app -> good to keep in store
+    user: null,              // this is a property from auth.service.ts, that is used across the app -> good to keep in store
+    authError: null,
+    loading: false
 }
 
 export function authReducer(state = initialState, action: AuthActions.AuthActions) {
@@ -22,12 +26,27 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
             
             return {
                 ...state,
-                user: user
+                user: user,
+                authError: null,
+                loading: false
             }
         case AuthActions.LOGOUT:
             return {
                 ...state,
                 user: null
+            }
+        case AuthActions.LOGIN_START:
+            return {
+                ...state,
+                authError: null,
+                loading: true
+            }
+        case AuthActions.LOGIN_FAIL:
+            return {
+                ...state,
+                user: null,
+                authError: action.payload,
+                loading: false
             }
         default:            // neccessary to properly initialize state
             return state;   // it is IMPORTANT cause when store.dispatch(any action from any reducer) is called ALL reducers are called:
