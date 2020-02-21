@@ -78,7 +78,7 @@ export class AuthService {
         );
         // this.user.next(user);   // TODO: change emitting user creation to action on ngRx
         this.store.dispatch(
-            new fromAuthActions.Login({
+            new fromAuthActions.AuthenticateSuccess({
                 email: email,
                 userId: userId,
                 token: token,
@@ -139,7 +139,7 @@ export class AuthService {
             this.autoLogout(expireInMiliseconds);
             // this.user.next(loadedUser);
             this.store.dispatch(
-                new fromAuthActions.Login({
+                new fromAuthActions.AuthenticateSuccess({
                     email: loadedUser.email,
                     userId: loadedUser.id,
                     token: loadedUser.token,

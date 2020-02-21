@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService, AuthResponseData } from './auth.service';
-import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as fromApp from '../store/app.reducer';
@@ -37,28 +36,13 @@ export class AuthComponent implements OnInit {
 
         this.isLoading = true;
 
-        let authObs: Observable<AuthResponseData>;
-
         if(this.isLoginMode) {
             // authObs = this.authService.login(email, password);
-            this.store.dispatch(new AuthActions.LoginStart({email: email, password: password})) // dispatch(Action) doesn't return observable = we cannot save it and subscribe to it as with authService method
+            this.store.dispatch(new AuthActions.LoginStart({email: email, password: password})); // dispatch(Action) doesn't return observable = we cannot save it and subscribe to it as with authService method
         } else {
-            authObs = this.authService.signup(email, password);
-            
+            // authObs = this.authService.signup(email, password);
+            this.store.dispatch(new AuthActions.SignupStart({email: email, password: password}));
         }
-
-        // authObs.subscribe(
-        //     responsedata => {
-        //         console.log(responsedata);
-        //         this.isLoading = false;
-        //         this.router.navigate(['/recipes']);
-        //     },
-        //     errorMessage => {
-        //         console.log(errorMessage);
-        //         this.error = errorMessage;
-        //         this.isLoading = false;
-        //     }
-        // )
         
         form.reset();
     }
