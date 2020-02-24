@@ -1,24 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as fromApp from '../store/app.reducer';
 import * as AuthActions from './store/auth.action';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-auth',
     templateUrl: './auth.component.html'
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, OnDestroy {
     isLoginMode = true; // we don't put it into state, cause it is used only in this component, not the entire app
     isLoading = false;
     error: string = null;
 
+    private storeSub: Subscription; // for unsubscribing
+
     constructor(private authService: AuthService, private router: Router, private store: Store<fromApp.AppState>) {}
 
     ngOnInit() {
-        this.store.select('auth').subscribe(authState => {
+        this.storeSub = this.store.select('auth').subscribe(authState => {
             this.isLoading = authState.loading;
             this.error = authState.authError;
             if(this.error) {
@@ -49,5 +52,15 @@ export class AuthComponent implements OnInit {
 
     onSwitchMode() {
         this.isLoginMode = !this.isLoginMode;
+    }
+
+    onHandleError() {
+        this.store.dispatch(new AuthActions.ClearError());
+    }
+
+    ngOnDestroy() {
+        if(this.storeSub) {
+            this.storeSub.unsubscribe();
+        }
     }
 }

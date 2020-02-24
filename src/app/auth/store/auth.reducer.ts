@@ -36,10 +36,11 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
                 user: null
             }
         case AuthActions.LOGIN_START:
+        case AuthActions.SIGNUP_START:  // switch case falls through, so we can use the same code for other cases
             return {
                 ...state,
                 authError: null,
-                loading: true
+                loading: true           // laoding spinner displayed
             }
         case AuthActions.AUTHENTICATE_FAIL:
             return {
@@ -47,6 +48,11 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
                 user: null,
                 authError: action.payload,
                 loading: false
+            }
+        case AuthActions.CLEAR_ERROR:
+            return {
+                ...state,
+                authError: null
             }
         default:            // neccessary to properly initialize state
             return state;   // it is IMPORTANT cause when store.dispatch(any action from any reducer) is called ALL reducers are called:

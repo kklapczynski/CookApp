@@ -30,7 +30,7 @@ export class AuthService {
     private tokenExpirationTimer: any;  // to be able to cancel setTimout when login out manually
 
     constructor(private http: HttpClient, private router: Router, private store: Store<fromAppStore.AppState>) {}
-
+/*
     signup(email: string, password: string) {
         // firebase setup: https://firebase.google.com/docs/reference/rest/auth#section-create-email-password
         // API_KEY: firebase console - project setting: web api
@@ -64,7 +64,7 @@ export class AuthService {
             })
         );
     }
-
+*/
     private handleAuthentication(email: string, userId: string, token: string, expiresIn: number) {
         // from Firebase docs in response: expiresIn 	string 	The number of seconds in which the ID token expires.
         const expirationDate = new Date(
@@ -151,8 +151,8 @@ export class AuthService {
 
     logout() {
         // this.user.next(null);   // TODO: change emitting user deletion to action on ngRx
-        this.store.dispatch(new fromAuthActions.Logout());
-        this.router.navigate(['/auth']);
+        this.store.dispatch(new fromAuthActions.Logout());  // moved to header.component.ts, cause that's where logout is triggered
+        // this.router.navigate(['/auth']);    // remove navigating from here to store effects - authRedirect effect
         localStorage.removeItem('userData');
         if(this.tokenExpirationTimer) {
             clearTimeout(this.tokenExpirationTimer);

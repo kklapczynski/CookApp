@@ -128,8 +128,8 @@ export class AuthEffects {
 
     // navigation after successful login can be handled here in ngrx effects - it's a side effect as it doesn't influance data of app
     @Effect({dispatch: false})   // if an effect doesn't (as typically it is) dispatch action @Effect decorator needs to be given an argument
-    authSuccess = this.actions$.pipe(
-        ofType(AuthActions.AUTHENTICATE_SUCCESS),
+    authRedirect = this.actions$.pipe(
+        ofType(AuthActions.AUTHENTICATE_SUCCESS, AuthActions.LOGOUT),
         tap( () => {
             this.router.navigate(['/'])
         })

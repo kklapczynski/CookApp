@@ -4,6 +4,7 @@ export const LOGIN_START = '[Auth] Login Start';    // new action for sending ht
 export const SIGNUP_START = '[Auth] Signup Start';
 export const AUTHENTICATE_SUCCESS = '[Auth] Login';    // action types naming convention of ngRx
 export const AUTHENTICATE_FAIL = '[Auth] Login Fail';
+export const CLEAR_ERROR = '[Auth] Clear Error';
 export const LOGOUT = '[Auth] Logout';
 
 export class LoginStart implements Action {
@@ -37,9 +38,13 @@ export class AuthenticateFail implements Action {
     constructor(public payload: string){}
 }
 
+export class ClearError implements Action {
+    readonly type = CLEAR_ERROR;
+}
+
 export class Logout implements Action {
     readonly type = LOGOUT;
 }
 
 // union type of actions
-export type AuthActions = LoginStart | SignupStart | AuthenticateSuccess | AuthenticateFail | Logout;
+export type AuthActions = LoginStart | SignupStart | AuthenticateSuccess | AuthenticateFail | ClearError | Logout;
