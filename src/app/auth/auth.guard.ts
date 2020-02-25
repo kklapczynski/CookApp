@@ -27,18 +27,20 @@ export class AuthGuard implements CanActivate {
     {
         // return true when it is allowed to pass the guard
         // in this case when user is authenticated - logged in
-        return this.store.select('auth', 'user').pipe(
+        return this.store.select('auth').pipe(
             take(1),
-            // map(authState => {           // shorter version is to add 'user' to this.store.select()
-            //     return authState.user;
-            // }),
+            map(authState => {           // shorter version is to add 'user' to this.store.select(), but it was causing error: 
+            //platform-browser.js:1980 Throttling navigation to prevent the browser from hanging. See https://crbug.com/882238. Command line switch --disable-ipc-flooding-protection can be used to bypass the protection
+            // ...after adding effect authLogout in auth.effects.ts
+                return authState.user;      
+            }),
             map(user => {
-            // return true when there is a user returned from authService
-            const isAuth = !!user;  // trick to convert existing object to true or to false when no object
-            if(isAuth) {
-                return true;
-            }
-            return this.router.createUrlTree(['/auth']);
+                // return true when there is a user returned from authService
+                const isAuth = !!user;  // trick to convert existing object to true or to false when no object
+                if(isAuth) {
+                    return true;
+                }
+                return this.router.createUrlTree(['/auth']);
             })
             // older solution to redirect when stopped by guard
             // ,tap(isAuth => {

@@ -8,6 +8,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { User } from '../user.model';
 
 // copied from auth.service.ts - this will be rebuild later
 export interface AuthResponseData {
@@ -23,6 +24,8 @@ const handleAuthentication = (expiresIn: number, email: string, userId: string, 
     const expirationDate = new Date(
         new Date().getTime() + +expiresIn * 1000
     );
+    const user = new User(email, userId, token, expirationDate);
+    localStorage.setItem('userData', JSON.stringify(user)); // converts JS object into a string
     return new AuthActions.AuthenticateSuccess({ // pass an action: @Effect decorator makes ngrx dispatch action passed here auctomatically
         email: email,
         userId: userId,
@@ -122,16 +125,65 @@ export class AuthEffects {
                 })
                 
             )
-        }) // if the http request finish with error, the whole authLogin observable would die, and it cannot, cause we would be able tologin again, we need to return non error obsevable,
+        }) // if the http request finish with error, the whole authLogin observable would die, and it cannot, cause we would be able to login again, we need to return non error obsevable,
             // even when error occurs - we need to catch error deeper inside = at http observable
     );      // no need to subscribe - ngrx does it automatically
+
+    @Effect({dispatch: false})  //  getting error: platform-browser.js:1980 Throttling navigation to prevent the browser from hanging. See https://crbug.com/882238. Command line switch --disable-ipc-flooding-protection can be used to bypass the protection
+    authLogout = this.actions$.pipe(
+        ofType(AuthActions.LOGOUT),
+        tap( () => {
+            localStorage.removeItem('userData');
+    })
+    )
 
     // navigation after successful login can be handled here in ngrx effects - it's a side effect as it doesn't influance data of app
     @Effect({dispatch: false})   // if an effect doesn't (as typically it is) dispatch action @Effect decorator needs to be given an argument
     authRedirect = this.actions$.pipe(
         ofType(AuthActions.AUTHENTICATE_SUCCESS, AuthActions.LOGOUT),
         tap( () => {
-            this.router.navigate(['/'])
+            this.router.navigate(['/']) // TODO: auth.guard doesn't work - when log out while in /recipes - it doesn't redirect to /auth route, it stays in recipes
         })
     );
+
+    @Effect()
+    autoLogin = this.actions$.pipe(
+        ofType(AuthActions.AUTO_LOGIN),
+        map( () => {
+            const userData: {
+                email: string;
+                id: string;
+                _token: string;
+                _tokenExpirationDate: string;
+            } = JSON.parse(localStorage.getItem('userData'));  // convert string back to JS object, but NOT to our User model (no getter token() e.g.)
+            
+            if(!userData) {
+                return { type: 'dummyType' };    // effect needs to return action - we simulate it with literal with poperty 'type'
+            }
+            // create new User to be able to use getter: token() - it checks if token is still valid
+            const loadedUser = new User(
+                userData.email,
+                userData.id,
+                userData._token,
+                new Date(userData._tokenExpirationDate)
+            );
+            
+            // if user token is valid emit it
+            if(loadedUser.token) {
+                    // autologout after token expires - need to calculate, cause token was issued earlier and it's closer to expire datetime
+                    // const expireInMiliseconds = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
+                    // this.autoLogout(expireInMiliseconds);
+                    // this.user.next(loadedUser);
+                // return action and ngRx effects will dispatch it
+                return new AuthActions.AuthenticateSuccess({
+                    email: loadedUser.email,
+                    userId: loadedUser.id,
+                    token: loadedUser.token,
+                    expirationDate: new Date(userData._tokenExpirationDate)
+                });
+            }
+            return { type: 'dummyType' };    // effect needs to return action - we simulate it with literal with poperty 'type'
+        })
+    )
+    
 }
