@@ -1,4 +1,4 @@
-import { Action, ActionReducerMap } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 
 export const LOGIN_START = '[Auth] Login Start';    // new action for sending http request - to be dealt with using ngrx effects
 export const SIGNUP_START = '[Auth] Signup Start';

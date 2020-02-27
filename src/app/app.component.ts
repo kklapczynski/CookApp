@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './auth/auth.service';
-import * as fromApp from './store/app.reducer';
 import { Store } from '@ngrx/store';
+
+import * as fromApp from './store/app.reducer';
 import * as AuthActions from './auth/store/auth.action';
 
 @Component({
@@ -17,6 +17,5 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(new AuthActions.AutoLogin());
-    // TODO: move auto login to ngRx - effects
   }
 }

@@ -2,15 +2,19 @@
 // these async processes could stay in services, but it's good practice to integrate them in ngrx
 
 import { Actions, ofType, Effect } from '@ngrx/effects';    // observable of all dispatched actions (it's different object then Action from ngrx/store)
-import * as AuthActions from './auth.action';
 import { switchMap, catchError, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { User } from '../user.model';
 
-// copied from auth.service.ts - this will be rebuild later
+import { User } from '../user.model';
+import { AuthService } from '../auth.service';
+import * as AuthActions from './auth.action';
+
+// new interface to be used only here in this service: to set up shape of data coming back from signing up
+// it is not required, but good practice in Angular
+// properties are from firebase auth docs
 export interface AuthResponseData {
     idToken: string;
     email: string;
@@ -66,7 +70,12 @@ const handleError: any = (errorRes: HttpErrorResponse) => {
 // dispatch login action - replace login with service in a auth.component.ts
 export class AuthEffects {
     
-    constructor(private actions$: Actions, private http: HttpClient, private router: Router) {}   // there is convention to mark observables with '$', but it's not required
+    constructor(
+        private actions$: Actions,   // there is convention to mark observables with '$', but it's not required
+        private http: HttpClient,
+        private router: Router,
+        private authService: AuthService
+    ) {}
 
     @Effect()
     authSignup = this.actions$.pipe(
@@ -80,6 +89,9 @@ export class AuthEffects {
                     returnSecureToken: true
                 }
             ).pipe(
+                tap(resData => {
+                    this.authService.setLogoutTimer(+resData.expiresIn *1000)
+                }),
                 // for successful request
                 map(resData => {
                     return handleAuthentication(
@@ -110,6 +122,10 @@ export class AuthEffects {
                     returnSecureToken: true
                 }
             ).pipe(
+                tap(resData => {
+                    // this.authService.setLogoutTimer(+resData.expiresIn) // for test autologout after 3.6 seconds
+                    this.authService.setLogoutTimer(+resData.expiresIn *1000)
+                }),
                 // for successful request
                 map(resData => {
                     return handleAuthentication(
@@ -133,16 +149,19 @@ export class AuthEffects {
     authLogout = this.actions$.pipe(
         ofType(AuthActions.LOGOUT),
         tap( () => {
+            this.authService.clearLogoutTimer();
             localStorage.removeItem('userData');
+            this.router.navigate(['/auth']);
     })
     )
 
     // navigation after successful login can be handled here in ngrx effects - it's a side effect as it doesn't influance data of app
     @Effect({dispatch: false})   // if an effect doesn't (as typically it is) dispatch action @Effect decorator needs to be given an argument
     authRedirect = this.actions$.pipe(
-        ofType(AuthActions.AUTHENTICATE_SUCCESS, AuthActions.LOGOUT),
+        ofType(AuthActions.AUTHENTICATE_SUCCESS),
         tap( () => {
-            this.router.navigate(['/']) // TODO: auth.guard doesn't work - when log out while in /recipes - it doesn't redirect to /auth route, it stays in recipes
+            this.router.navigate(['/']) // TODO: auth.guard doesn't work - when log out while in /recipes - it doesn't redirect to /auth route, it stays in recipes - it's because of the rece between effect and reducer
+                                        // to avoid that redirect after logout is moved to separate logout effect
         })
     );
 
@@ -170,10 +189,9 @@ export class AuthEffects {
             
             // if user token is valid emit it
             if(loadedUser.token) {
-                    // autologout after token expires - need to calculate, cause token was issued earlier and it's closer to expire datetime
-                    // const expireInMiliseconds = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
-                    // this.autoLogout(expireInMiliseconds);
-                    // this.user.next(loadedUser);
+                // for autologout after token expires - need to calculate, cause token was issued earlier and it's closer to expire datetime
+                const expireInMiliseconds = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
+                this.authService.setLogoutTimer(expireInMiliseconds);
                 // return action and ngRx effects will dispatch it
                 return new AuthActions.AuthenticateSuccess({
                     email: loadedUser.email,
